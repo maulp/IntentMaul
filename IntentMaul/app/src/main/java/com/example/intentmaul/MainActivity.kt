@@ -1,14 +1,19 @@
 package com.example.intentmaul
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 
 class MainActivity : AppCompatActivity(), View.OnClickListener{
     private lateinit var btnMoveActivity: Button
     private lateinit var btnMoveWithData: Button
+    private lateinit var btnDialNumber: Button
+    private lateinit var btnResultFromActivity: Button
+    private lateinit var tvResult: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +24,23 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
 
         btnMoveWithData = findViewById(R.id.btn_move_with_data)
         btnMoveWithData.setOnClickListener(this)
+
+        btnDialNumber = findViewById(R.id.btn_dial_number)
+        btnDialNumber.setOnClickListener(this)
+
+        tvResult = findViewById(R.id.tv_result)
+        OSReceived()
+
+        btnResultFromActivity = findViewById(R.id.btn_result_from_activity)
+        btnResultFromActivity.setOnClickListener(this)
     }
+
+    private fun OSReceived() {
+        val bundle = intent.extras
+        val OS = bundle?.getString("OS")
+        tvResult.text = OS
+    }
+
     override fun onClick(v:View?){
         if (v != null){
             when(v.id){
@@ -33,6 +54,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener{
                     bundle.putString("Nama", "Maulana Prayoga")
                     bundle.putString("Alamat", "Mayjen Panjaitan")
                     intent.putExtras(bundle)
+                    startActivity(intent)
+                }
+                R.id.btn_dial_number -> run{
+                    var dialNumber = "087704756564"
+                    val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+dialNumber))
+                    startActivity(intent)
+                }
+                R.id.btn_result_from_activity -> run{
+                    val intent = Intent(this, MoveForResultActivity::class.java)
                     startActivity(intent)
                 }
             }
